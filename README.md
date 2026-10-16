@@ -4,6 +4,10 @@ An expense approval workflow built on AWS Lambda durable functions. A request co
 
 It's the companion code for an InfraTales article on AWS Builder Center. We built and tested it on a laptop against local engines. See [what we tested](#what-we-tested).
 
+## Architecture
+
+![Submit starts a durable workflow that emails the approver and waits; Decide records the choice](docs/architecture.png)
+
 ## How it works
 
 Three Lambda functions share one Amazon DynamoDB table:
