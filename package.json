@@ -1,0 +1,52 @@
+{
+  "name": "durable-approval-workflow",
+  "version": "1.0.0",
+  "description": "An expense approval workflow on AWS Lambda durable functions: it waits days for a human decision and bills no compute while it waits. AWS CDK, TypeScript.",
+  "private": true,
+  "license": "MIT-0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "jest",
+    "test:int": "jest -c jest.integration.config.js",
+    "synth": "cdk synth --quiet",
+    "check": "npm run build && npm run lint && npm test && npm run synth",
+    "deploy": "cdk deploy",
+    "destroy": "cdk destroy",
+    "smoke": "ts-node scripts/smoke-test.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1152.0",
+    "@aws-sdk/client-lambda": "^3.1152.0",
+    "@aws-sdk/client-sns": "^3.1152.0",
+    "@aws-sdk/lib-dynamodb": "^3.1152.0",
+    "@aws-sdk/util-dynamodb": "^3.996.9",
+    "@aws/durable-execution-sdk-js": "2.6.0",
+    "aws-cdk-lib": "^2.273.0",
+    "cdk-nag": "^3.0.2",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "@aws-sdk/client-cloudformation": "^3.1152.0",
+    "@aws-sdk/credential-provider-node": "^3.972.86",
+    "@aws/durable-execution-sdk-js-testing": "1.3.0",
+    "@eslint/js": "^10.0.1",
+    "@smithy/signature-v4": "^5.7.4",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.19.2",
+    "aws-cdk": "^2.1145.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
