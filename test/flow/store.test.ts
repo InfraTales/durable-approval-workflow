@@ -65,6 +65,16 @@ test('claimDecision: the same decision twice returns the callback ID again, for 
   expect(await store.claimDecision(id, h, 'REJECTED', BEFORE_DEADLINE)).toEqual({ kind: 'conflict', decision: 'APPROVED' });
 });
 
+test('claimDecision: retrying a claim after the deadline is a success, and expire records it', async () => {
+  const id = await pending();
+  expect((await store.claimDecision(id, h, 'APPROVED', BEFORE_DEADLINE)).kind).toBe('claimed');
+  // The first response was lost and the approver retries after the deadline, before the workflow ran expire.
+  expect(await store.claimDecision(id, h, 'APPROVED', AFTER_DEADLINE)).toEqual({ kind: 'already-claimed' });
+  expect(await store.claimDecision(id, h, 'REJECTED', AFTER_DEADLINE)).toEqual({ kind: 'conflict', decision: 'APPROVED' });
+  expect(await store.expire(id, AFTER_DEADLINE)).toBe('APPROVED');
+  expect(await store.claimDecision(id, h, 'APPROVED', AFTER_DEADLINE)).toEqual({ kind: 'already-final' });
+});
+
 test('expire vs claim: whichever conditional write lands first decides', async () => {
   const expiredFirst = await pending();
   expect(await store.expire(expiredFirst, AFTER_DEADLINE)).toBe('EXPIRED');

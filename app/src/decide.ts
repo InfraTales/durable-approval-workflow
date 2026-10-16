@@ -36,6 +36,7 @@ export function createDecisionHandler(deps: DecisionDeps) {
         case 'closed':
           return json(410, { message: 'this request is closed: it expired or was decided automatically' });
         case 'already-final':
+        case 'already-claimed':
           return json(200, { requestId, decision });
         case 'claimed':
           await wakeWorkflow(deps.lambda, claim.callbackId, decision);

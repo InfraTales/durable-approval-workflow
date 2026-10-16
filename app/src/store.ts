@@ -18,6 +18,7 @@ export interface ApprovalItem extends ExpenseRequest {
 export type ClaimResult =
   | { kind: 'claimed'; callbackId: string }
   | { kind: 'already-final' } // the same decision is already recorded and closed
+  | { kind: 'already-claimed' } // the same decision was claimed in time; the deadline passed before this retry
   | { kind: 'not-found' } // no such request, or the token is wrong (we don't say which)
   | { kind: 'conflict'; decision: Decision } // someone already recorded the other decision
   | { kind: 'closed' }; // expired or auto-approved: too late to decide
@@ -104,6 +105,9 @@ export class ApprovalStore {
       const old = oldItem(err);
       if (!old || old.tokenHash !== tokenHash) return { kind: 'not-found' };
       if (old.status === decision) return { kind: 'already-final' };
+      // A retry of a claim that landed before the deadline. The workflow hasn't finalized yet,
+      // and expire() records a claimed decision instead of expiring, so this decision stands.
+      if (old.status === 'PENDING' && old.decision === decision) return { kind: 'already-claimed' };
       if (old.decision && old.decision !== decision) return { kind: 'conflict', decision: old.decision };
       return { kind: 'closed' };
     }
