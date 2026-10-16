@@ -52,11 +52,21 @@ npm run test:int         # flow tests: real handlers + local durable runner + Dy
 To deploy, use a CDK-bootstrapped account in a Region that has durable functions:
 
 ```bash
-npx cdk deploy -c approverEmail=you@example.com -c alertEmail=you@example.com
+npm run deploy -- -c approverEmail=you@example.com -c alertEmail=you@example.com
 npm run smoke
 ```
 
 Confirm the SNS subscription email before you run the smoke test. The smoke test checks that an unsigned submit gets 403, a $20 request is auto-approved, and a $120 request stays `RUNNING` while it waits for you.
+
+## Clean up
+
+CloudFormation waits up to an hour for running durable executions to finish before it deletes the workflow function, so stop them first (see [docs/runbook.md](docs/runbook.md#deleting-the-stack)). Then run:
+
+```bash
+npm run destroy
+```
+
+The stack keeps the approvals table (`RemovalPolicy.RETAIN`, with point-in-time recovery on), because the records are an audit trail. Delete it in the DynamoDB console or with `aws dynamodb delete-table` once you no longer need them.
 
 ## What we tested
 

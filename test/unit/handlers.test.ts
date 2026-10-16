@@ -99,6 +99,7 @@ describe('decide', () => {
     [{ kind: 'conflict', decision: 'REJECTED' }, 409],
     [{ kind: 'closed' }, 410],
     [{ kind: 'already-final' }, 200],
+    [{ kind: 'already-claimed' }, 200],
   ])('claim %j answers %i without sending a callback', async (claim, status) => {
     expect((await handlerWith(claim)(urlEvent('POST', body))).statusCode).toBe(status);
     expect(lambda.commandCalls(SendDurableExecutionCallbackSuccessCommand)).toHaveLength(0);
